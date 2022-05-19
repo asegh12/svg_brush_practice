@@ -1,6 +1,5 @@
 import "./App.css";
-import { useState } from "react";
-import SvgCanvas from "./ components/svgCanvas";
+import SvgCanvas from "./components/svgCanvas/svgCanvas";
 
 function App() {
   return (

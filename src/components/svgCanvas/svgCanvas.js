@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { CheckImg } from "./styles";
 
 function SvgCanvas() {
   const [btn, setBtn] = useState(null);
@@ -8,7 +9,6 @@ function SvgCanvas() {
   const [shapeCount, setShapeCount] = useState(0);
 
   const btnClick = (e) => {
-    console.log(e.target.id);
     setBtn(e.target.id);
   };
 
@@ -20,11 +20,12 @@ function SvgCanvas() {
   const pointsToPath = (points) => {
     let d = "";
     points.forEach((point) => {
-      if (d) {
-        d += ` L ${point[0]} ${point[1]}`;
-      } else {
-        d = `M ${point[0]} ${point[1]}`;
-      }
+      d += point[0] + "," + point[1] + " ";
+      // if (d) {
+      //   d += ` L ${point[0]} ${point[1]}`;
+      // } else {
+      //   d = `M ${point[0]} ${point[1]}`;
+      // }
     });
     return d;
   };
@@ -53,16 +54,16 @@ function SvgCanvas() {
 
   return (
     <div className="SvgCanvas">
-      <div>
+      <CheckImg>
         <svg
-          height="700"
-          width="570"
+          height="554"
+          width="451"
           xmlns="http://www.w3.org/2000/svg"
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
           onPointerMove={handlePointerMove}
         >
-          <defs>
+          {/* <defs>
             <clipPath id="myClip">
               <path d="M10 10 H 400 V 400 H 10 L 10 10" />
               {shapes.map((shape, index) => {
@@ -73,13 +74,52 @@ function SvgCanvas() {
             <image
               id="cat"
               href={`${process.env.PUBLIC_URL}/origin.png`}
-              height="700"
-              width="570"
+              height="554"
+              width="451"
             />
           </defs>
-          <use clipPath="url(#myClip)" href="#cat"></use>
+          <use clipPath="url(#myClip)" href="#cat"></use> */}
+          <g>
+            <g></g>
+          </g>
+          <g mask="url(#SvgjsMask1)">
+            <image
+              height="554"
+              width="451"
+              href={`${process.env.PUBLIC_URL}/1masked.png`}
+            />
+          </g>
+          <image
+            height="554"
+            width="451"
+            href={`${process.env.PUBLIC_URL}/1origin.png`}
+            mask="url(#SvgjsMask3)"
+          />
+          <defs>
+            <mask id="SvgjsMask1">
+              <rect height="554" width="451" fill="#ffffff"></rect>
+              <g id="SvgjsG2">
+                {/* 맵 함수 추가 */}
+                {shapes.map((shape, index) => {
+                  return (
+                    <polyline
+                      points={pointsToPath(shape)}
+                      stroke-width="5"
+                      stroke={btn === "eraser" ? "#000000" : "#ffffff"}
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  );
+                })}
+              </g>
+            </mask>
+            <mask id="SvgjsMask3">
+              <rect width="451" height="554" fill="#000000"></rect>
+              <use href="#SvgjsG2"></use>
+            </mask>
+          </defs>
         </svg>
-      </div>
+      </CheckImg>
       <div>
         <button id="eraser" onClick={btnClick}>
           eraser
