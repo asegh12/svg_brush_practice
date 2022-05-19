@@ -6,6 +6,7 @@ function SvgCanvas() {
   const [allowSketching, setAllowSketching] = useState(null);
   const [stroke, setStroke] = useState([]);
   const [shapes, setShapes] = useState([]);
+  const [colour, setColour] = useState([]);
   const [shapeCount, setShapeCount] = useState(0);
 
   const btnClick = (e) => {
@@ -21,19 +22,14 @@ function SvgCanvas() {
     let d = "";
     points.forEach((point) => {
       d += point[0] + "," + point[1] + " ";
-      // if (d) {
-      //   d += ` L ${point[0]} ${point[1]}`;
-      // } else {
-      //   d = `M ${point[0]} ${point[1]}`;
-      // }
     });
     return d;
   };
 
   const handlePointerDown = (e) => {
-    console.log(e.pointerId);
     e.target.setPointerCapture(e.pointerId);
     setAllowSketching(true);
+    setColour([...colour, btn]);
     setStroke([]);
   };
 
@@ -46,7 +42,7 @@ function SvgCanvas() {
   };
 
   const handlePointerMove = (e) => {
-    if (allowSketching && btn === "eraser") {
+    if (allowSketching) {
       const p = getPointerPosition(e);
       setStroke([...stroke, p]);
     }
@@ -63,22 +59,6 @@ function SvgCanvas() {
           onPointerUp={handlePointerUp}
           onPointerMove={handlePointerMove}
         >
-          {/* <defs>
-            <clipPath id="myClip">
-              <path d="M10 10 H 400 V 400 H 10 L 10 10" />
-              {shapes.map((shape, index) => {
-                return <path d={pointsToPath(shape)} />;
-              })}
-            </clipPath>
-
-            <image
-              id="cat"
-              href={`${process.env.PUBLIC_URL}/origin.png`}
-              height="554"
-              width="451"
-            />
-          </defs>
-          <use clipPath="url(#myClip)" href="#cat"></use> */}
           <g>
             <g></g>
           </g>
@@ -99,18 +79,35 @@ function SvgCanvas() {
             <mask id="SvgjsMask1">
               <rect height="554" width="451" fill="#ffffff"></rect>
               <g id="SvgjsG2">
-                {/* 맵 함수 추가 */}
                 {shapes.map((shape, index) => {
                   return (
                     <polyline
+                      key={index}
                       points={pointsToPath(shape)}
-                      stroke-width="5"
-                      stroke={btn === "eraser" ? "#000000" : "#ffffff"}
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="15"
+                      stroke={
+                        colour[index] === "eraser" ? "#000000" : "#ffffff"
+                      }
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     />
                   );
                 })}
+                <polyline
+                  key="current_stroke"
+                  id="current_stroke"
+                  points={pointsToPath(stroke)}
+                  strokeWidth="15"
+                  stroke={
+                    colour[colour.length - 1] === "eraser"
+                      ? "#000000"
+                      : "#ffffff"
+                  }
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </g>
             </mask>
             <mask id="SvgjsMask3">
