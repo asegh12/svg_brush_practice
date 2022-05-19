@@ -1,1 +1,1 @@
-eraser 버튼 클릭 후, mousedown & mousemove 시에 이미지 복구
+원본이미지 & 누끼딴이미지 필요
